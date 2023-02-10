@@ -3,7 +3,7 @@
 
 int isPrime(int a)	//возвращает 1 - число простое, 0 - не простое
 {
-	for (int i = 2; i <= int(sqrt(double(a))); i++)
+	for (int i = 2; i <= sqrt(a); i++)
 	{
 		if (a % i == 0) {
 			return 0;
