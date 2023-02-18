@@ -1,28 +1,35 @@
 ﻿#include <stdio.h>
 #include <math.h>
 
-void main()
+double function(double x) //задаем функцию
 {
-	double s_up = 0; //верхняя сумма
-	double s_down = 0; //нижняя сумма
-	int i = 0;
-	int prec = 0; //точность
-	printf("Enter precision: ");
-	scanf_s("%d", &prec);
+	return x * x - 1;
+}
 
+double deriv(double (*func)(double), double x, double dx) //считаем производную
+{
+	return (func(x + dx) - func(x - dx)) / (2 * dx);
+}
+
+double solve_eq(double (*func)(double), double x0, double dx)
+{
+	double x1;
 	do
 	{
-		if (i % 2 == 0)
-		{
-			s_up = s_down + (double)4 / (2 * i + 1);
-		}
-		else
-		{
-			s_down = s_up - (double)4 / (2 * i + 1);
-		}
-		i++;
-	}
-	while (fabs(s_up - s_down) > pow(10, -(prec)));
-	printf(" % .*f\n", prec, (s_up + s_down) / 2);
+		x1 = x0 - (func(x0) / deriv(func, x0, dx));
+		x0 = x1;
 
+	} while (fabs(func(x1)) > pow(10, -6));
+	return x1;
+}
+
+
+int main()
+{
+	double x0 = 1;
+	double dx = 0.1;
+
+	//printf("Enter approximate root: ");
+	//scanf_s("%f", &x0);
+	printf("%.10f", solve_eq(function, x0, dx));
 }
