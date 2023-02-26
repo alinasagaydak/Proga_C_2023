@@ -1,15 +1,13 @@
-﻿#include <stdio.h>
+#include <stdio.h>
 #include <math.h>
 #define MaxSize 20
 
 int arr[MaxSize];
-int size;
-int* psize = &size;
 
-int Max(int arr[])
+int Max(int arr[], int size)
 {
 	int max = arr[0];
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < size; i++)
 	{
 		if (max < arr[i])
 			max = arr[i];
@@ -17,10 +15,10 @@ int Max(int arr[])
 	return max;
 }
 
-int Min(int arr[])
+int Min(int arr[], int size)
 {
 	int min = arr[0];
-	for (int i = 0; i < *psize; i++)
+	for (int i = 0; i < size; i++)
 	{
 		if (min > arr[i])
 			min = arr[i];
@@ -29,39 +27,25 @@ int Min(int arr[])
 }
 
 
-double Mean(int arr[])
+double Mean(int arr[], int size)
 {
 	double sum = 0;
-	for (int i = 0; i < *psize; i++)
+	for (int i = 0; i < size; i++)
 		sum += arr[i];
-	return sum / *psize;
+	return sum / size;
 }
 
-double RMS(int arr[])
+double RMS(int arr[], int size)
 {
 	double sum = 0;
-	for (int i = 0; i < *psize; i++)
-		sum += pow(arr[i] - Mean(arr), 2);
-	return sqrt(sum / *psize);
+	for (int i = 0; i < size; i++)
+		sum += pow(arr[i] - Mean(arr, size), 2);
+	return sqrt(sum / size);
 }
-
-//Я подумала, что первый способ поиска среднеквадратичного скучноват + в заданиях что-то про массивы написано
-//Но по итогу второй способ выглядит как-то не очень
-/*
-double RMS(int arr[])
-{
-	double sum = 0;
-	double sum_arr[MaxSize] = {};
-	for (int i = 0; i < *psize; i++)
-		sum_arr[i] = pow(arr[i] - Mean(arr), 2);
-	for (int i = 0; i < *psize; i++)
-		sum += sum_arr[i];
-	return sqrt(sum / *psize);
-}
-*/
 
 int main()
 {
+	int size;
 	while (1)
 	{
 		printf("Enter size of array: ");
@@ -85,12 +69,9 @@ int main()
 
 	printf("\r\n");
 
-	printf("Maximum: %d\n", Max(arr));
-	printf("Minimum: %d\n", Min(arr));
-	printf("Mean: %.4f\n", Mean(arr));
-	printf("RMS: %.4f", RMS(arr));
+	printf("Maximum: %d\n", Max(arr, size));
+	printf("Minimum: %d\n", Min(arr, size));
+	printf("Mean: %.4f\n", Mean(arr, size));
+	printf("RMS: %.4f", RMS(arr, size));
 
 }
-
-
-
