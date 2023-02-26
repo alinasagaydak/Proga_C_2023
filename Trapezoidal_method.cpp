@@ -1,4 +1,4 @@
-﻿#include <stdio.h>
+#include <stdio.h>
 #include <math.h>
 
 double function(double x)
@@ -6,29 +6,28 @@ double function(double x)
 	return x * x ;
 }
 
-double CalcIntegral(double (*func)(double), int steps, int lower_lim, double amendment)
+double CalcIntegral(double (*func)(double), double lower_lim, double upper_lim, int steps_number)
 {
 	double sum = 0;
-	for (int i = 0; i < steps - 1; i++)
+	double dx = (upper_lim - lower_lim) / steps_number;
+	for (int i = 0; i < steps_number - 1; i++)
 	{
-		sum += ((func(lower_lim + amendment * i) + func(lower_lim + amendment * (i + 1))) / 2) * amendment;
+		sum += ((func(lower_lim + dx * i) + func(lower_lim + dx * (i + 1))) / 2) * dx;
 	}
 	return sum;
 }
 
 int main()
 {
-	int steps = 0;
-	int lower_lim = 0;
-	int upper_lim = 0;
+	int steps_number = 0;
+	double lower_lim = 0;
+	double upper_lim = 0;
 	printf("Enter steps: ");
-	scanf_s("%d", &steps);
+	scanf_s("%d", &steps_number);
 	printf("Enter limits of integration");
 	printf("\nlower_lim: ");
-	scanf_s("%d", &lower_lim);
+	scanf_s("%lf", &lower_lim);
 	printf("upper_lim: ");
-	scanf_s("%d", &upper_lim);
-	double amendment = (upper_lim - lower_lim) / (double)steps;
-	printf("amendment: %f\n", amendment);
-	printf("%f\n", CalcIntegral(function, steps, lower_lim, amendment));
+	scanf_s("%lf", &upper_lim);
+	printf("%f\n", CalcIntegral(function, lower_lim, upper_lim, steps_number));
 }
