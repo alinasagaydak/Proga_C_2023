@@ -1,35 +1,35 @@
-﻿#include <stdio.h>
+#include <stdio.h>
 #include <math.h>
 
 double function(double x) //задаем функцию
 {
-	return x * x - sin(10 * x);
+	return x * x - 1;
 }
 
-double deriv(double (*func)(double), double x, double h) //считаем производную
+double deriv(double (*func)(double), double x, double dx) //считаем производную
 {
-	return (func(x + h) - func(x - h)) / (2 * h);
+	return (func(x + dx) - func(x - dx)) / (2 * dx);
 }
+
+double solve_eq(double (*func)(double), double x0, double dx)
+{
+	double x1;
+	do
+	{
+		x1 = x0 - (func(x0) / deriv(func, x0, dx));
+		x0 = x1;
+
+	} while (fabs(func(x1)) > pow(10, -6));
+	return x1;
+}
+
 
 int main()
 {
-	double h = 0.1;
-	double x0 = 3;
-	double x1;
-	int prec = 0;
-	double amendment; //поправка
+	double x0 = 0;
+	double dx = 0.1;
 
-	printf("Enter precision: ");
-	scanf_s("%d", &prec);
-
-	do
-	{
-		amendment = (-1) * (function(x0) / deriv(function, x0, h));
-		x1 = x0 + amendment;
-		if (function(x1) == 0)
-			break;
-		x0 = x1;
-
-	} while (fabs(function(x1)) > pow(10, -(prec)));
-	printf("%f", x1);
+	printf("Enter approximate root: ");
+	scanf_s("%lf", &x0);
+	printf("%.10f", solve_eq(function, x0, dx));
 }
