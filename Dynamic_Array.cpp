@@ -2,7 +2,7 @@
 #include <malloc.h>
 #include <math.h>
 
-void CreateArray(int* arr, int size)
+void FillArray(int* arr, int size)
 {
 	printf("Enter the array elements: ");
 	for (int i = 0; i < size; i++)
@@ -13,7 +13,7 @@ void CreateArray(int* arr, int size)
 
 void PrintArray(int* arr, int size)
 {
-	printf("\r\nArray: ");
+	printf("\nArray: ");
 	for (int i = 0; i < size; i++)
 	{
 		printf("%d\t", *(arr+i));
@@ -67,7 +67,7 @@ int main()
 	int* arr;
 	arr = (int*)malloc(size * sizeof(int));
 
-	CreateArray(arr, size);
+	FillArray(arr, size);
 	PrintArray(arr, size);
 
 	printf("\r\nMax of array: %d", Max(arr, size));
