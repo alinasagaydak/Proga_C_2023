@@ -10,7 +10,7 @@ double CalcIntegral(double (*func)(double), double lower_lim, double upper_lim, 
 {
 	double sum = 0;
 	double dx = (upper_lim - lower_lim) / steps_number;
-	for (int i = 0; i < steps_number - 1; i++)
+	for (int i = 0; i <= steps_number - 1; i++)
 	{
 		sum += ((func(lower_lim + dx * i) + func(lower_lim + dx * (i + 1))) / 2) * dx;
 	}
