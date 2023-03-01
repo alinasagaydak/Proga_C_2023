@@ -1,7 +1,7 @@
 ﻿#include <stdio.h>
 #include <malloc.h>
 #include <stdlib.h>
-#include<time.h>
+#include <time.h>
 
 int choose_sort()
 {
