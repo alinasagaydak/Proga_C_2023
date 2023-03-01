@@ -155,4 +155,6 @@ int main()
 	printf("\n");
 	printf("Sorting array: ");
 	PrintArray(arr, size);
+	
+	free(arr);
 }
