@@ -1,4 +1,4 @@
-﻿#include <stdio.h>
+#include <stdio.h>
 #include <math.h>
 #include <malloc.h>
 
@@ -29,72 +29,6 @@ void Replace(int* x1, int* x2)
 
 	*x2 = temp;
 }
-
-/*
-void sortIncrease(int* arr, int size)
-{
-	bool noSwap;
-
-	for (int i = size - 1; i >= 0; i--)
-	{
-		noSwap = 1;
-		for (int j = 0; j < i; j++)
-		{
-			if (*(arr + j) > *(arr + (j + 1)))
-			{
-				Replace(&arr[j], &arr[j+1]);
-				noSwap = 0;
-			}
-
-		}
-		if (noSwap == 1)
-			break;
-	}
-}
-
-void sortDecrease(int* arr, int size)
-{
-	int tmp;
-	bool noSwap;
-
-	for (int i = size - 1; i >= 0; i--)
-	{
-		noSwap = 1;
-		for (int j = 0; j < i; j++)
-		{
-			if (*(arr + j) < *(arr + (j + 1)))
-			{
-				Replace(&arr[j], &arr[j + 1]);
-				noSwap = 0;
-			}
-		}
-		if (noSwap == 1)
-			break;
-	}
-}
-
-void sortAbs(int* arr, int size)
-{
-	int tmp;
-	bool noSwap;
-
-	for (int i = size - 1; i >= 0; i--)
-	{
-		noSwap = 1;
-		for (int j = 0; j < i; j++)
-		{
-			if (abs( * (arr + j)) > abs(* (arr + (j + 1))))
-			{
-				Replace(&arr[j], &arr[j + 1]);
-				noSwap = 0;
-			}
-		}
-		if (noSwap == 1)
-			break;
-	}
-}
-*/
-
 
 void sort_func(int* arr, int size, int sort_type)
 {
@@ -163,80 +97,8 @@ int main()
 	printf("Choose the sorting method: ");
 	scanf_s("%d", &sort_type);
 
-	/*
-	switch (sort_meth)
-	{
-	case 1:
-		sortIncrease(arr, size);
-		break;
-	case 2:
-		sortDecrease(arr, size);
-		break;
-	case 3: 
-		sortAbs(arr, size);
-		break;
-	}
-	*/
-
 	sort_func(arr, size, sort_type);
 	PrintArray(arr, size);
 
 	free(arr);
 }
-
-
-
-
-
-
-
-
-/*
-void Compare(void (*replace)(int*, int*), int* arr, int size)
-{
-	bool noSwap;
-
-	for (int i = size - 1; i >= 0; i--) //increase
-	{
-		noSwap = 1;
-		for (int j = 0; j < i; j++)
-		{
-			if (*(arr + j) > *(arr + (j + 1)))
-			{
-				replace(&arr[j], &arr[j + 1]);
-				noSwap = 0;
-			}
-
-		}
-		if (noSwap == 1)
-			break;
-	}
-}
-*/
-
-/*
-void sortDecrease(int* arr, int size)
-{
-	int tmp;
-	bool noSwap;
-
-	for (int i = size - 1; i >= 0; i--)
-	{
-		noSwap = 1;
-		for (int j = 0; j < i; j++)
-		{
-			if (*(arr + j) > *(arr + (j + 1)))
-			{
-				noSwap = 1;
-			}
-			else
-			{
-				Replace(&arr[j], &arr[j + 1]);
-				noSwap = 0;
-			}
-		}
-		if (noSwap == 1)
-			break;
-	}
-}
-*/
