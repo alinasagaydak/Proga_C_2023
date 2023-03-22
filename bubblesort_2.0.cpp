@@ -20,7 +20,7 @@ void Replace(int* x1, int* x2)
 	*x2 = temp;
 }
 
-int compare_inс(int* a, int* b)  /////Написать сравнение для указателей
+int compare_inс(int* a, int* b) 
 {
 	int a_int = *a;
 	int b_int = *b;
