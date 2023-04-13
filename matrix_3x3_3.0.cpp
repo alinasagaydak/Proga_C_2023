@@ -28,13 +28,20 @@ Matrix readFileToMatrix(char* name, int xSize, int ySize)
 	A.xSize = xSize;
 	A.ySize = ySize;
 	FILE* fp;
-	fopen_s(&fp, name, "r");
-	for (int row_num = 0; row_num < A.ySize; row_num++)
+	fopen_s(&fp, name, "ab+");
+	if (fp != NULL)
 	{
-		for (int col_num = 0; col_num < A.xSize; col_num++)
+		for (int row_num = 0; row_num < A.ySize; row_num++)
 		{
-			fscanf_s(fp, "%f", &A.data[row_num][col_num]);
+			for (int col_num = 0; col_num < A.xSize; col_num++)
+			{
+				fscanf_s(fp, "%f", &A.data[row_num][col_num]);
+			}
 		}
+	}
+	else
+	{
+		printf("File error");
 	}
 	fclose(fp);
 	return A;
@@ -48,7 +55,7 @@ void writeTextToFile(FILE* targetFile, Matrix* A)
 		{
 			fprintf(targetFile, "%f\t", A->data[row_num][col_num]);
 		}
-		fprintf(targetFile, "%c", "\n");
+		fprintf(targetFile, "\n");
 	}
 }
 
@@ -99,23 +106,20 @@ Matrix matrixTranspose(Matrix* A)
 	Matrix res;
 	res.xSize = A->xSize;
 	res.ySize = A->ySize;
-
-	for (int col_num = 0; col_num < res.xSize; col_num++) //фиксируем столбец и печатаем элементы этого столбца в строчку
+	//fixed the col and print elements of this col in the row
+	for (int col_num = 0; col_num < res.xSize; col_num++)
 	{
 		for (int row_num = 0; row_num < res.ySize; row_num++)
 		{
 			res.data[row_num][col_num] = A->data[col_num][row_num];
-			//fprintf(fp, "%f", res.data[row_num][col_num]); ///вопрос: почему в файл записывает НЕ транспонированную матрицу, а исходную
 		}
-		//fprintf(fp, "%c", '\n');
 	}
-	//fprintf(fp, "%c", '\n');
 	return res;
 }
 
 float matrixDeterminant(Matrix* A)
 {
-	double reduction;
+	float rowReduction;
 	float det = 1;
 
 	Matrix res;
@@ -129,31 +133,26 @@ float matrixDeterminant(Matrix* A)
 		}
 	}
 
-	//приведение матрицы к ступенчатому виду методом гаусса
+	//Gaussian elimination
 	for (int diag_el = 0; diag_el < A->xSize - 1; diag_el++)
 	{
-		for (int row_num = diag_el + 1; row_num < A->xSize; row_num++) // i row_num	j col_num	k diag_el
+		for (int row_num = diag_el + 1; row_num < A->xSize; row_num++)
 		{
 			if (res.data[diag_el][diag_el] != 0)
 			{
-				//reduction is ...
-				reduction = - res.data[row_num][diag_el] / res.data[diag_el][diag_el];
+				rowReduction = - res.data[row_num][diag_el] / res.data[diag_el][diag_el];
 				for (int col_num = 0; col_num < A->xSize; col_num++)
 				{
-					res.data[row_num][col_num] += res.data[diag_el][col_num] * reduction;
+					res.data[row_num][col_num] += res.data[diag_el][col_num] * rowReduction;
 				}
 			}
-
 		}
 	}
-	//fprintf(fp, "%s\n", "det A:");
-	//det верхнетреугольной матрицы
+	//det of triangular matrix
 	for (int i = 0; i < 3; i++) 
 	{
 		det *= res.data[i][i];
 	}
-	//fprintf(fp, "%f\n", det);
-	//fprintf(fp, "%c", '\n');
 	return det;
 }
 
@@ -224,17 +223,6 @@ Matrix matrixInversion(Matrix* A) //A N
 			A->data[i][j] = res.data[i][j];
 		}
 	}
-
-	//fprintf(fp, "%s\n", "inverse A:");
-	for (int row_num = 0; row_num < res.ySize; row_num++)
-	{
-		for (int col_num = 0; col_num < res.xSize; col_num++)
-		{
-			//fprintf(fp, "%f\t", res.data[row_num][col_num]);
-		}
-		//fprintf(fp, "%c", "\n");
-	}
-	//fprintf(fp, "%c", "\n");
 	return res;
 }
 
@@ -245,8 +233,8 @@ int main()
 	int ySize = 3;
 
 	//initialize mat A
-	char f_name_A[] = "mat_A.txt";
-	A = readFileToMatrix(f_name_A, xSize, ySize);
+	char fileName[] = "mat_A.txt";
+	A = readFileToMatrix(fileName, xSize, ySize);
 	A.xSize = xSize;
 	A.ySize = ySize;
 
@@ -257,7 +245,7 @@ int main()
 	{
 		for (int col_num = 0; col_num < xSize; col_num++)
 		{
-			B.data[row_num][col_num] = rand() % 10;	//(201) + (-100);
+			B.data[row_num][col_num] = rand() % 10;
 		}
 	}
 	B.xSize = xSize;
@@ -286,31 +274,33 @@ int main()
 	printMatrix(&resTranspose);
 
 	printf("Determinant A: %f\n", resDeterminant);
+	printf("\n");
 
 	printf("Inversion A: \n");
 	printMatrix(&resInsversion);
 
 	//stdin
 	FILE* fp;
-	fopen_s(&fp, "mat_res.txt", "a+");
+	fopen_s(&fp, "mat_res.txt", "ab");
+	if (fp != NULL)
 	{
 		fprintf(fp, "%s\n", "A + B:");
 		writeTextToFile(fp, &resSumm);
-		//fprintf(fp, "%c", "\n");
 
 		fprintf(fp, "%s\n", "A x B:");
 		writeTextToFile(fp, &resMulti);
-		//fprintf(fp, "%c", "\n");
 
 		fprintf(fp, "%s\n", "Transposed A:");
 		writeTextToFile(fp, &resTranspose);
-		//fprintf(fp, "%c", "\n");
 
-		fprintf(fp, "%f\n", resDeterminant);
+		fprintf(fp, "Determinant A: %f\n", resDeterminant);
 
 		fprintf(fp, "%s\n", "Inverse A:");
 		writeTextToFile(fp, &resInsversion);
-		//fprintf(fp, "%c", "\n");
+	}
+	else
+	{
+		printf("File error");
 	}
 	fclose(fp);
 }
