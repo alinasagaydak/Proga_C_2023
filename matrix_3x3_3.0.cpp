@@ -9,8 +9,9 @@ typedef struct
 	int ySize;
 } Matrix;
 
-void printMatrix(Matrix* M)
+void printMatrix(Matrix* M, const char* nameOperation)
 {
+	printf("%s\n", nameOperation);
 	for (int row_num = 0; row_num < M->ySize; row_num++)
 	{
 		for (int col_num = 0; col_num < M->xSize; col_num++)
@@ -22,20 +23,15 @@ void printMatrix(Matrix* M)
 	printf("\n");
 }
 
-Matrix readFileToMatrix(char* fileName, int xSize, int ySize)
+Matrix readFileToMatrix(FILE* fp, Matrix* A)
 {
-	Matrix A;
-	A.xSize = xSize;
-	A.ySize = ySize;
-	FILE* fp;
-	fopen_s(&fp, fileName, "ab+");
 	if (fp != NULL)
 	{
-		for (int row_num = 0; row_num < A.ySize; row_num++)
+		for (int row_num = 0; row_num < A->ySize; row_num++)
 		{
-			for (int col_num = 0; col_num < A.xSize; col_num++)
+			for (int col_num = 0; col_num < A->xSize; col_num++)
 			{
-				fscanf_s(fp, "%f", &A.data[row_num][col_num]);
+				fscanf_s(fp, "%f", &A->data[row_num][col_num]);
 			}
 		}
 	}
@@ -43,19 +39,18 @@ Matrix readFileToMatrix(char* fileName, int xSize, int ySize)
 	{
 		printf("File error");
 	}
-	fclose(fp);
-	return A;
+	return *A;
 }
 
-void writeTextToFile(FILE* targetFile, Matrix* A)
+void writeTextToFile(FILE* fp, Matrix* A)
 {
 	for (int row_num = 0; row_num < A->ySize; row_num++)
 	{
 		for (int col_num = 0; col_num < A->xSize; col_num++)
 		{
-			fprintf(targetFile, "%f\t", A->data[row_num][col_num]);
+			fprintf(fp, "%f\t", A->data[row_num][col_num]);
 		}
-		fprintf(targetFile, "\n");
+		fprintf(fp, "\n");
 	}
 }
 
@@ -64,7 +59,7 @@ Matrix matrixSumm(Matrix* A, Matrix* B)
 	Matrix res;
 	res.xSize = A->xSize;
 	res.ySize = A->ySize;
-	
+
 	for (int row_num = 0; row_num < A->ySize; row_num++)
 	{
 		for (int col_num = 0; col_num < A->xSize; col_num++)
@@ -106,6 +101,7 @@ Matrix matrixTranspose(Matrix* A)
 	Matrix res;
 	res.xSize = A->xSize;
 	res.ySize = A->ySize;
+
 	//fixed the col and print elements of this col in the row
 	for (int col_num = 0; col_num < res.xSize; col_num++)
 	{
@@ -140,7 +136,7 @@ float matrixDeterminant(Matrix* A)
 		{
 			if (res.data[diag_el][diag_el] != 0)
 			{
-				rowReduction = - res.data[row_num][diag_el] / res.data[diag_el][diag_el];
+				rowReduction = -res.data[row_num][diag_el] / res.data[diag_el][diag_el];
 				for (int col_num = 0; col_num < A->xSize; col_num++)
 				{
 					res.data[row_num][col_num] += res.data[diag_el][col_num] * rowReduction;
@@ -148,9 +144,9 @@ float matrixDeterminant(Matrix* A)
 			}
 		}
 	}
-	
+
 	//det of triangular matrix
-	for (int i = 0; i < 3; i++) 
+	for (int i = 0; i < 3; i++)
 	{
 		det *= res.data[i][i];
 	}
@@ -160,6 +156,7 @@ float matrixDeterminant(Matrix* A)
 Matrix matrixInversion(Matrix* A)
 {
 	double temp;
+
 	Matrix res;
 	res.xSize = A->xSize;
 	res.ySize = A->ySize;
@@ -170,6 +167,18 @@ Matrix matrixInversion(Matrix* A)
 			res.data[row_num][col_num] = A->data[row_num][col_num];
 		}
 	}
+
+	Matrix tmp_mat;
+	tmp_mat.xSize = A->xSize;
+	tmp_mat.ySize = A->ySize;
+	for (int row_num = 0; row_num < A->ySize; row_num++)
+	{
+		for (int col_num = 0; col_num < A->xSize; col_num++)
+		{
+			tmp_mat.data[row_num][col_num] = A->data[row_num][col_num];
+		}
+	}
+
 	//create identity matrix
 	for (int row_num = 0; row_num < res.ySize; row_num++)
 	{
@@ -180,24 +189,25 @@ Matrix matrixInversion(Matrix* A)
 				res.data[row_num][col_num] = 1.0;
 		}
 	}
+
 	//solving the equation A * invertible(A) = E
 	for (int diag_el = 0; diag_el < res.xSize; diag_el++)
 	{
-		temp = A->data[diag_el][diag_el];
+		temp = tmp_mat.data[diag_el][diag_el];
 
 		for (int col_num = 0; col_num < res.xSize; col_num++)
 		{
-			A->data[diag_el][col_num] /= temp;
+			tmp_mat.data[diag_el][col_num] /= temp;
 			res.data[diag_el][col_num] /= temp;
 		}
 
 		for (int row_num = diag_el + 1; row_num < res.ySize; row_num++)
 		{
-			temp = A->data[row_num][diag_el];
+			temp = tmp_mat.data[row_num][diag_el];
 
 			for (int col_num = 0; col_num < res.xSize; col_num++)
 			{
-				A->data[row_num][col_num] -= A->data[diag_el][col_num] * temp;
+				tmp_mat.data[row_num][col_num] -= tmp_mat.data[diag_el][col_num] * temp;
 				res.data[row_num][col_num] -= res.data[diag_el][col_num] * temp;
 			}
 		}
@@ -207,11 +217,11 @@ Matrix matrixInversion(Matrix* A)
 	{
 		for (int row_num = diag_el - 1; row_num >= 0; row_num--)
 		{
-			temp = A->data[row_num][diag_el];
+			temp = tmp_mat.data[row_num][diag_el];
 
 			for (int col_num = 0; col_num < res.xSize; col_num++)
 			{
-				A->data[row_num][col_num] -= A->data[diag_el][col_num] * temp;
+				tmp_mat.data[row_num][col_num] -= tmp_mat.data[diag_el][col_num] * temp;
 				res.data[row_num][col_num] -= res.data[diag_el][col_num] * temp;
 			}
 		}
@@ -221,34 +231,47 @@ Matrix matrixInversion(Matrix* A)
 	{
 		for (int col_num = 0; col_num < res.xSize; col_num++)
 		{
-			A->data[row_num][col_num] = res.data[row_num][col_num];
+			tmp_mat.data[row_num][col_num] = res.data[row_num][col_num];
 		}
 	}
 	return res;
 }
 
-int main()
+Matrix initRandomMatrix(int xSize, int ySize)
 {
-	Matrix A, B;
-	int xSize = 3;
-	int ySize = 3;
+	Matrix randomMatrix;
+	randomMatrix.xSize = xSize;
+	randomMatrix.ySize = ySize;
 
-	//initialize mat A
-	char fileName[] = "mat_A.txt";
-	A = readFileToMatrix(fileName, xSize, ySize);
-
-	//initialize mat B
 	time_t t;
 	srand((unsigned)time(&t));
 	for (int row_num = 0; row_num < ySize; row_num++)
 	{
 		for (int col_num = 0; col_num < xSize; col_num++)
 		{
-			B.data[row_num][col_num] = rand() % 10;
+			randomMatrix.data[row_num][col_num] = rand() % 10;
 		}
 	}
-	B.xSize = xSize;
-	B.ySize = ySize;
+	return randomMatrix;
+}
+
+int main()
+{
+	FILE* fp;
+	Matrix A, B;
+	int xSize = 3;
+	int ySize = 3;
+	char fileName[] = "mat_A.txt";
+
+	//initialize mat A
+	fopen_s(&fp, fileName, "ab+");
+	A.xSize = xSize;
+	A.ySize = ySize;
+	A = readFileToMatrix(fp, &A);
+	fclose(fp);
+
+	//initialize mat B
+	B = initRandomMatrix(xSize, ySize);
 
 	//results
 	Matrix resSumm = matrixSumm(&A, &B);
@@ -256,30 +279,20 @@ int main()
 	Matrix resTranspose = matrixTranspose(&A);
 	float resDeterminant = matrixDeterminant(&A);
 	Matrix resInsversion = matrixInversion(&A);
-
-	//stdout
-	printf("Matrix A: \n");
-	printMatrix(&A);
-	printf("Matrix B: \n");
-	printMatrix(&B);
 	
-	printf("A + B: \n");
-	printMatrix(&resSumm);
-
-	printf("A x B: \n");
-	printMatrix(&resMulti);
-
-	printf("Transposed A: \n");
-	printMatrix(&resTranspose);
+	//stdout
+	printMatrix(&A, "Matrix A:");
+	printMatrix(&B, "Matrix B:");
+	printMatrix(&resSumm, "A + B:");
+	printMatrix(&resMulti, "A x B:");
+	printMatrix(&resTranspose, "Transposed A:");
 
 	printf("Determinant A: %f\n", resDeterminant);
 	printf("\n");
 
-	printf("Inversion A: \n");
-	printMatrix(&resInsversion);
+	printMatrix(&resInsversion, "Inversion A:");
 
 	//stdin
-	FILE* fp;
 	fopen_s(&fp, "mat_res.txt", "ab");
 	if (fp != NULL)
 	{
