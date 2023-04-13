@@ -269,7 +269,7 @@ int main()
 	printf("A x B: \n");
 	printMatrix(&resMulti);
 
-	printf("Transposed matrix A: \n");
+	printf("Transposed A: \n");
 	printMatrix(&resTranspose);
 
 	printf("Determinant A: %f\n", resDeterminant);
