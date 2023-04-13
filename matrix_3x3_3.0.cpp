@@ -148,6 +148,7 @@ float matrixDeterminant(Matrix* A)
 			}
 		}
 	}
+	
 	//det of triangular matrix
 	for (int i = 0; i < 3; i++) 
 	{
