@@ -236,8 +236,6 @@ int main()
 	//initialize mat A
 	char fileName[] = "mat_A.txt";
 	A = readFileToMatrix(fileName, xSize, ySize);
-	A.xSize = xSize;
-	A.ySize = ySize;
 
 	//initialize mat B
 	time_t t;
