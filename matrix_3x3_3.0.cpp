@@ -169,58 +169,58 @@ Matrix matrixInversion(Matrix* A) //A N
 			res.data[row_num][col_num] = A->data[row_num][col_num];
 		}
 	}
-
-	for (int i = 0; i < res.ySize; i++)
+	//create identity matrix
+	for (int row_num = 0; row_num < res.ySize; row_num++)
 	{
-		for (int j = 0; j < res.xSize; j++)
+		for (int col_num = 0; col_num < res.xSize; col_num++)
 		{
-			res.data[i][j] = 0.0;
-			if (i == j)
-				res.data[i][j] = 1.0;
+			res.data[row_num][col_num] = 0.0;
+			if (row_num == col_num)
+				res.data[row_num][col_num] = 1.0;
 		}
 	}
-		
-	for (int k = 0; k < res.xSize; k++)
+	//solving the equation A * invertible(A) = E
+	for (int diag_el = 0; diag_el < res.xSize; diag_el++)
 	{
-		temp = A->data[k][k];
+		temp = A->data[diag_el][diag_el];
 
-		for (int j = 0; j < res.xSize; j++)
+		for (int col_num = 0; col_num < res.xSize; col_num++)
 		{
-			A->data[k][j] /= temp;
-			res.data[k][j] /= temp;
+			A->data[diag_el][col_num] /= temp;
+			res.data[diag_el][col_num] /= temp;
 		}
 
-		for (int i = k + 1; i < res.xSize; i++)
+		for (int row_num = diag_el + 1; row_num < res.ySize; row_num++)
 		{
-			temp = A->data[i][k];
+			temp = A->data[row_num][diag_el];
 
-			for (int j = 0; j < res.xSize; j++)
+			for (int col_num = 0; col_num < res.xSize; col_num++)
 			{
-				A->data[i][j] -= A->data[k][j] * temp;
-				res.data[i][j] -= res.data[k][j] * temp;
+				A->data[row_num][col_num] -= A->data[diag_el][col_num] * temp;
+				res.data[row_num][col_num] -= res.data[diag_el][col_num] * temp;
 			}
 		}
 	}
 
-	for (int k = res.xSize - 1; k > 0; k--)
+	for (int diag_el = res.xSize - 1; diag_el > 0; diag_el--)
 	{
-		for (int i = k - 1; i >= 0; i--)
+		for (int row_num = diag_el - 1; row_num >= 0; row_num--)
 		{
-			temp = A->data[i][k];
+			temp = A->data[row_num][diag_el];
 
-			for (int j = 0; j < res.xSize; j++)
+			for (int col_num = 0; col_num < res.xSize; col_num++)
 			{
-				A->data[i][j] -= A->data[k][j] * temp;
-				res.data[i][j] -= res.data[k][j] * temp;
+				A->data[row_num][col_num] -= A->data[diag_el][col_num] * temp;
+				res.data[row_num][col_num] -= res.data[diag_el][col_num] * temp;
 			}
 		}
 	}
 
-	for (int i = 0; i < res.xSize; i++)
+	for (int row_num = 0; row_num < res.ySize; row_num++)
 	{
-		for (int j = 0; j < res.xSize; j++)
+		for (int col_num = 0; col_num < res.xSize; col_num++)
 		{
-			A->data[i][j] = res.data[i][j];
+			A->data[row_num][col_num] = res.data[row_num][col_num];
 		}
 	}
 	return res;
@@ -251,7 +251,7 @@ int main()
 	B.xSize = xSize;
 	B.ySize = ySize;
 
-	//results of code
+	//results
 	Matrix resSumm = matrixSumm(&A, &B);
 	Matrix resMulti = matrixMulti(&A, &B);
 	Matrix resTranspose = matrixTranspose(&A);
@@ -295,7 +295,7 @@ int main()
 
 		fprintf(fp, "Determinant A: %f\n", resDeterminant);
 
-		fprintf(fp, "%s\n", "Inverse A:");
+		fprintf(fp, "%s\n", "Invertible A:");
 		writeTextToFile(fp, &resInsversion);
 	}
 	else
