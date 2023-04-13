@@ -294,7 +294,7 @@ int main()
 
 		fprintf(fp, "Determinant A: %f\n", resDeterminant);
 
-		fprintf(fp, "%s\n", "Invertible A:");
+		fprintf(fp, "%s\n", "Inversion A:");
 		writeTextToFile(fp, &resInsversion);
 	}
 	else
