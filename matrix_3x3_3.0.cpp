@@ -22,13 +22,13 @@ void printMatrix(Matrix* M)
 	printf("\n");
 }
 
-Matrix readFileToMatrix(char* name, int xSize, int ySize)
+Matrix readFileToMatrix(char* fileName, int xSize, int ySize)
 {
 	Matrix A;
 	A.xSize = xSize;
 	A.ySize = ySize;
 	FILE* fp;
-	fopen_s(&fp, name, "ab+");
+	fopen_s(&fp, fileName, "ab+");
 	if (fp != NULL)
 	{
 		for (int row_num = 0; row_num < A.ySize; row_num++)
@@ -156,7 +156,7 @@ float matrixDeterminant(Matrix* A)
 	return det;
 }
 
-Matrix matrixInversion(Matrix* A) //A N
+Matrix matrixInversion(Matrix* A)
 {
 	double temp;
 	Matrix res;
