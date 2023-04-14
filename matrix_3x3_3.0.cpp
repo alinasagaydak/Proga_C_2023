@@ -48,7 +48,7 @@ void writeTextToFile(FILE* fp, Matrix* A)
 	{
 		for (int col_num = 0; col_num < A->xSize; col_num++)
 		{
-			fprintf(fp, "%f\t", A->data[row_num][col_num]);
+			fprintf(fp, "%f%c", A->data[row_num][col_num], ' ');
 		}
 		fprintf(fp, "\n");
 	}
