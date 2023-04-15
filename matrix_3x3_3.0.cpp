@@ -160,11 +160,13 @@ Matrix matrixInversion(Matrix* A)
 	Matrix res;
 	res.xSize = A->xSize;
 	res.ySize = A->ySize;
-	for (int row_num = 0; row_num < A->ySize; row_num++)
+	for (int row_num = 0; row_num < res.ySize; row_num++)
 	{
-		for (int col_num = 0; col_num < A->xSize; col_num++)
+		for (int col_num = 0; col_num < res.xSize; col_num++)
 		{
-			res.data[row_num][col_num] = A->data[row_num][col_num];
+			res.data[row_num][col_num] = 0.0;
+			if (row_num == col_num)
+				res.data[row_num][col_num] = 1.0;
 		}
 	}
 
@@ -176,17 +178,6 @@ Matrix matrixInversion(Matrix* A)
 		for (int col_num = 0; col_num < A->xSize; col_num++)
 		{
 			tmp_mat.data[row_num][col_num] = A->data[row_num][col_num];
-		}
-	}
-
-	//create identity matrix
-	for (int row_num = 0; row_num < res.ySize; row_num++)
-	{
-		for (int col_num = 0; col_num < res.xSize; col_num++)
-		{
-			res.data[row_num][col_num] = 0.0;
-			if (row_num == col_num)
-				res.data[row_num][col_num] = 1.0;
 		}
 	}
 
