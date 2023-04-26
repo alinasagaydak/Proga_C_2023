@@ -45,6 +45,8 @@ void get_text(FILE* stream, char terminator) {
 
 int main()
 {
+	// вручную выбрать откуда считывать текст. в файле должен быть стоп-символ (#)
+	
 	//get_text(stdin, '#');
 
 	FILE* fp;
