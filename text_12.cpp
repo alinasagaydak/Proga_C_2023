@@ -139,4 +139,6 @@ int main()
 
 	correctLetters(text, strlen(text));
 	printf("%s\n", text);
+	
+	free(text);
 }
